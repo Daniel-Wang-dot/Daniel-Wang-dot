@@ -1,0 +1,715 @@
+package java1;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class FinalProgramWithAllConstraintsAndSelection {
+    public enum MajorDirection {
+        STEM(1), MEDICAL(2), BUSINESS(3), SOCIAL_SCIENCE(4), ENVIRONMENTAL(5), CS_DATA(6), LANGUAGE_CULTURE(7), LAW_POLICY(8);
+        int code;
+        MajorDirection(int code) {this.code = code;}
+        public static MajorDirection fromCode(int c) {
+            for(MajorDirection d: values()){
+                if(d.code == c) return d;
+            }
+            return STEM; 
+        }
+    }
+
+    public enum CourseCategory {
+        ENGLISH, MATH, SCIENCE, SOCIAL_STUDIES, FINANCIAL, PE_HEALTH, VPA, WL, LIFE_CAREERS, ELECTIVES
+    }
+
+    static class Course {
+        String name;
+        CourseCategory category;
+        double gpa;
+        double difficulty;
+        double relevance; 
+        List<String> prerequisites;
+        int period; 
+        int gradeLevelMin; 
+        int gradeLevelMax; 
+        boolean isAP;
+
+        public Course(String name, CourseCategory category, double gpa, double difficulty, double relevance,
+                      List<String> prereq, int period, int gradeLevelMin, int gradeLevelMax, boolean isAP) {
+            this.name = name;
+            this.category = category;
+            this.gpa = gpa;
+            this.difficulty = difficulty;
+            this.relevance = relevance;
+            this.prerequisites = prereq;
+            this.period = period;
+            this.gradeLevelMin = gradeLevelMin;
+            this.gradeLevelMax = gradeLevelMax;
+            this.isAP = isAP;
+        }
+    }
+
+    static class GraduationRequirements {
+        int englishNeeded = 20;    
+        int mathNeeded = 15;
+        int scienceNeeded = 15;
+        int socialNeeded = 15;
+        int financialNeeded = 3;  
+        int peHealthNeeded = 10;
+        int vpaNeeded = 5;
+        int wlNeeded = 10;        
+        int lifeCareersNeeded = 5;
+        int electivesNeeded = 33; 
+
+        void updateRequirements(List<Course> completed) {
+            for (Course c: completed) {
+                switch(c.category) {
+                    case ENGLISH: englishNeeded -= 5; break;
+                    case MATH: mathNeeded -= 5; break;
+                    case SCIENCE: scienceNeeded -= 5; break;
+                    case SOCIAL_STUDIES: socialNeeded -= 5; break;
+                    case FINANCIAL: financialNeeded -= 5; break;
+                    case PE_HEALTH: peHealthNeeded -= 5; break;
+                    case VPA: vpaNeeded -= 5; break;
+                    case WL: wlNeeded -= 5; break;
+                    case LIFE_CAREERS: lifeCareersNeeded -= 5; break;
+                    case ELECTIVES: electivesNeeded -= 5; break;
+                }
+            }
+            englishNeeded = Math.max(0, englishNeeded);
+            mathNeeded = Math.max(0, mathNeeded);
+            scienceNeeded = Math.max(0, scienceNeeded);
+            socialNeeded = Math.max(0, socialNeeded);
+            financialNeeded = Math.max(0, financialNeeded);
+            peHealthNeeded = Math.max(0, peHealthNeeded);
+            vpaNeeded = Math.max(0, vpaNeeded);
+            wlNeeded = Math.max(0, wlNeeded);
+            lifeCareersNeeded = Math.max(0, lifeCareersNeeded);
+            electivesNeeded = Math.max(0, electivesNeeded);
+        }
+
+        public boolean needThisCategory(CourseCategory cat) {
+            switch(cat) {
+                case ENGLISH: return englishNeeded > 0;
+                case MATH: return mathNeeded > 0;
+                case SCIENCE: return scienceNeeded > 0;
+                case SOCIAL_STUDIES: return socialNeeded > 0;
+                case FINANCIAL: return financialNeeded > 0;
+                case PE_HEALTH: return peHealthNeeded > 0;
+                case VPA: return vpaNeeded > 0;
+                case WL: return wlNeeded > 0;
+                case LIFE_CAREERS: return lifeCareersNeeded > 0;
+                case ELECTIVES: return electivesNeeded > 0;
+            }
+            return true;
+        }
+    }
+
+    private static Map<String,List<String>> prerequisitesMap = new HashMap<>();
+    static {
+        // 数学
+        prerequisitesMap.put("Geometry, CP", Arrays.asList("Algebra I"));
+        prerequisitesMap.put("Geometry, Honors", Arrays.asList("Algebra I"));
+        prerequisitesMap.put("Algebra II", Arrays.asList("Algebra I"));
+        prerequisitesMap.put("Algebra 2, Honors", Arrays.asList("Algebra I"));
+        prerequisitesMap.put("Pre Calculus, CP", Arrays.asList("Algebra II","Algebra 2, Honors"));
+        prerequisitesMap.put("Honors Precalculus", Arrays.asList("Algebra II","Algebra 2, Honors"));
+        prerequisitesMap.put("AP Precalculus", Arrays.asList("Algebra II","Algebra 2, Honors"));
+        prerequisitesMap.put("Calculus", Arrays.asList("Pre Calculus, CP","Honors Precalculus"));
+        prerequisitesMap.put("AP Calculus AB", Arrays.asList("Pre Calculus, CP","Honors Precalculus"));
+        prerequisitesMap.put("AP Calculus BC", Arrays.asList("AP Calculus AB"));
+        prerequisitesMap.put("AP Statistics", Arrays.asList("Algebra II","Algebra 2, Honors"));
+        prerequisitesMap.put("Honors Probability & Statistics", Arrays.asList("Algebra II","Algebra 2, Honors"));
+
+        // 科学
+        prerequisitesMap.put("AP Biology", Arrays.asList("Biology, CP","Biology, Honors"));
+        prerequisitesMap.put("AP Chemistry", Arrays.asList("Chemistry, CP","Chemistry, Honors"));
+        prerequisitesMap.put("AP Physics I", Arrays.asList("Physics, CP/Honors"));
+
+        // CS
+        prerequisitesMap.put("AP Computer Science A", Arrays.asList("Computer Programming I (Fall) / Computer Programming II (Spring)"));
+        prerequisitesMap.put("AP Computer Science Principles", Arrays.asList("Computer Programming I (Fall) / Computer Programming II (Spring)"));
+
+        // 历史
+        prerequisitesMap.put("AP US History", Arrays.asList("US History, CP","US History, Honors"));
+
+        // 语言
+        prerequisitesMap.put("Spanish II, Honors", Arrays.asList("Spanish I"));
+        prerequisitesMap.put("Spanish III, Honors", Arrays.asList("Spanish II, Honors"));
+        prerequisitesMap.put("Spanish IV, Honors", Arrays.asList("Spanish III, Honors"));
+        prerequisitesMap.put("Arabic II, CP", Arrays.asList("Arabic I"));
+        prerequisitesMap.put("Arabic III & IV, Honors", Arrays.asList("Arabic II, CP"));
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("请输入学生年级(9,10,11,12):");
+        int studentGrade = sc.nextInt();
+        sc.nextLine();
+        System.out.println("请输入已修课程名称，以分号';'分隔(如果没有已修课则留空):");
+        String completedStr = sc.nextLine().trim();
+        List<String> completedCourses = new ArrayList<>();
+        if(!completedStr.isEmpty()) {
+            completedCourses = Arrays.stream(completedStr.split(";")).map(String::trim).collect(Collectors.toList());
+        }
+        System.out.println("请输入专业方向代码(1-STEM,2-医学,3-商科,4-社会科学与人文,5-环境科学,6-计算机与数据,7-语言文化,8-法律与公共政策):");
+        int dirCode = sc.nextInt();
+        MajorDirection direction = MajorDirection.fromCode(dirCode);
+
+        System.out.println("10年级，11年级的gpa需要尽量高。9年级和12年级的gpa可以较低");
+        printAPRecommendation(direction);
+
+        List<Course> allCourses = initAllCourses();
+        List<Course> completedCourseObjs = mapCoursesByName(allCourses, completedCourses);
+
+        GraduationRequirements req = new GraduationRequirements();
+        req.updateRequirements(completedCourseObjs);
+
+        List<Course> filtered = filterCourses(allCourses, completedCourses, studentGrade, req);
+        Map<Integer,List<Course>> periodMap = filtered.stream().collect(Collectors.groupingBy(c -> c.period));
+
+        List<List<Course>> allPlans = generateAllPossiblePlans(periodMap);
+
+        int completedPECount = (int) completedCourseObjs.stream().filter(c->c.category==CourseCategory.PE_HEALTH).count();
+
+        List<List<Course>> feasiblePlans = new ArrayList<>();
+        for (List<Course> plan : allPlans) {
+            if (isFeasible(plan, studentGrade, req, completedPECount)) {
+                feasiblePlans.add(plan);
+            }
+        }
+
+        if (feasiblePlans.isEmpty()) {
+            System.out.println("无可行方案");
+            return;
+        }
+
+        // 调用新的三个方案打印函数
+        System.out.println("GPA最高方案:");
+        printHighestGPAPlan(feasiblePlans, direction);
+
+        System.out.println("\n最与专业相关方案:");
+        printMostRelevantPlan(feasiblePlans, direction);
+
+        System.out.println("\n课程最简单方案:");
+        printEasiestPlan(feasiblePlans, direction);
+    }
+
+    private static void printAPRecommendation(MajorDirection direction) {
+        System.out.println("根据您的专业方向，推荐的AP课程有：");
+        switch(direction) {
+            case STEM:
+                System.out.println("AP Calculus AB/BC, AP Physics I, AP Chemistry, AP Computer Science A/Principles, AP Statistics");
+                break;
+            case MEDICAL:
+                System.out.println("AP Biology, AP Chemistry, AP Psychology, AP Calculus AB/BC, AP Statistics");
+                break;
+            case BUSINESS:
+                System.out.println("AP Microeconomics, AP Macroeconomics, AP Calculus AB, AP Statistics, AP English Language and Composition");
+                break;
+            case SOCIAL_SCIENCE:
+                System.out.println("AP US History, AP World History(如有), AP Psychology, AP Government and Politics, AP English Literature and Composition");
+                break;
+            case ENVIRONMENTAL:
+                System.out.println("AP Environmental Science, AP Biology, AP Chemistry, AP Statistics, AP Human Geography(如有)");
+                break;
+            case CS_DATA:
+                System.out.println("AP Computer Science A, AP Computer Science Principles, AP Calculus AB/BC, AP Statistics, AP Physics(如有)");
+                break;
+            case LANGUAGE_CULTURE:
+                System.out.println("AP English Language/Literature, AP World Language(如有), AP Human Geography(如有), AP Comparative Government and Politics, AP World History");
+                break;
+            case LAW_POLICY:
+                System.out.println("AP US Government and Politics, AP Comparative Government and Politics, AP US History, AP English Language and Composition, AP Psychology");
+                break;
+        }
+    }
+
+    private static List<Course> mapCoursesByName(List<Course> all, List<String> names) {
+        List<Course> res = new ArrayList<>();
+        Set<String> set = new HashSet<>(names);
+        for (Course c : all) {
+            if (set.contains(c.name)) {
+                res.add(c);
+            }
+        }
+        return res;
+    }
+
+    private static List<Course> filterCourses(List<Course> allCourses, List<String> completedCourses, int grade, GraduationRequirements req) {
+        List<Course> result = new ArrayList<>();
+        for (Course c : allCourses) {
+            if (grade < c.gradeLevelMin || grade > c.gradeLevelMax) continue;
+            if (!checkPrerequisites(c, completedCourses)) continue;
+            if (completedCourses.contains(c.name)) continue;
+            if (req.needThisCategory(c.category) || req.electivesNeeded > 0) {
+                result.add(c);
+            }
+        }
+        return result;
+    }
+
+    private static boolean checkPrerequisites(Course c, List<String> completedCourses) {
+        for (String p : c.prerequisites) {
+            if (!completedCourses.contains(p)) return false;
+        }
+        return true;
+    }
+
+    private static List<List<Course>> generateAllPossiblePlans(Map<Integer,List<Course>> periodMap) {
+        List<Integer> periods = new ArrayList<>(periodMap.keySet());
+        List<List<Course>> results = new ArrayList<>();
+        backtrack(periods,0,periodMap,new ArrayList<>(),results);
+        return results;
+    }
+
+    private static void backtrack(List<Integer> periods, int index, Map<Integer, List<Course>> periodMap,
+                                  List<Course> current, List<List<Course>> results) {
+        if (index == periods.size()) {
+            results.add(new ArrayList<>(current));
+            return;
+        }
+        int p = periods.get(index);
+        for (Course c : periodMap.get(p)) {
+            current.add(c);
+            backtrack(periods,index+1,periodMap,current,results);
+            current.remove(current.size()-1);
+        }
+    }
+
+    private static boolean isFeasible(List<Course> plan, int grade, GraduationRequirements req, int completedPECount) {
+        if (!checkNoDuplicateCourse(plan)) return false;
+        if(!checkEnglishRule(plan, grade)) return false;
+        if(!checkMathRule(plan)) return false;
+        if(!checkCourseLevelVariants(plan)) return false;
+        return true;
+    }
+
+    // 不允许同一课程重复
+    private static boolean checkNoDuplicateCourse(List<Course> plan) {
+        Set<String> names = new HashSet<>();
+        for (Course c : plan) {
+            if (!names.add(c.name)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // 不允许同一基础课程CP/Honors/AP同时出现
+    private static String getBaseCourseName(String name) {
+        String base = name;
+        if (base.startsWith("AP ")) {
+            base = base.substring(3).trim();
+        }
+        base = base.replace(", CP","").replace(", Honors","").trim();
+        return base;
+    }
+
+    private static boolean checkCourseLevelVariants(List<Course> plan) {
+        Map<String,Integer> baseCount = new HashMap<>();
+        for (Course c : plan) {
+            String base = getBaseCourseName(c.name);
+            baseCount.put(base, baseCount.getOrDefault(base,0)+1);
+        }
+        for (int count : baseCount.values()) {
+            if (count > 1) return false;
+        }
+        return true;
+    }
+
+    private static boolean checkEnglishRule(List<Course> plan, int grade) {
+        int countEnglish = 0;
+        for (Course c : plan) {
+            if (c.category == CourseCategory.ENGLISH) countEnglish++;
+        }
+        return countEnglish == 1;
+    }
+
+    private static boolean checkMathRule(List<Course> plan) {
+        List<Course> mathCourses = plan.stream().filter(c -> c.category==CourseCategory.MATH).collect(Collectors.toList());
+        if (mathCourses.size() > 2) return false;
+        if (mathCourses.size() == 2) {
+            Set<String> names = mathCourses.stream().map(c->c.name).collect(Collectors.toSet());
+            boolean allowedCombo =
+                    (names.contains("Geometry, CP") && names.contains("Algebra I")) ||
+                    (names.contains("AP Calculus AB") && names.contains("AP Statistics"));
+            return allowedCombo;
+        }
+        return true;
+    }
+
+    // 判断课程是否属于用户专业方向
+    private static boolean isCourseInMajor(MajorDirection direction, Course c) {
+        switch(direction) {
+            case STEM:
+                return c.category == CourseCategory.MATH || c.category == CourseCategory.SCIENCE || c.category == CourseCategory.LIFE_CAREERS;
+            case MEDICAL:
+                if (c.category == CourseCategory.SCIENCE || c.category==CourseCategory.MATH) return true;
+                return c.name.contains("Psychology");
+            case BUSINESS:
+                if (c.category == CourseCategory.FINANCIAL) return true;
+                if (c.name.contains("Economics")||c.name.contains("Business")||c.name.contains("Marketing")) return true;
+                if (c.category == CourseCategory.MATH && c.name.contains("Statistics")) return true;
+                return false;
+            case SOCIAL_SCIENCE:
+                if (c.category == CourseCategory.SOCIAL_STUDIES) return true;
+                if (c.name.contains("Psychology")||c.name.contains("Sociology")||c.name.contains("Anthropology")) return true;
+                return false;
+            case ENVIRONMENTAL:
+                if (c.name.contains("Environmental Science") || c.category == CourseCategory.SCIENCE) return true;
+                if (c.category == CourseCategory.MATH && c.name.contains("Statistics")) return true;
+                return false;
+            case CS_DATA:
+                if (c.category == CourseCategory.LIFE_CAREERS && c.name.contains("Computer")) return true;
+                if (c.category == CourseCategory.MATH && (c.name.contains("Statistics")||c.name.contains("Calculus"))) return true;
+                return false;
+            case LANGUAGE_CULTURE:
+                return c.category == CourseCategory.WL || c.category == CourseCategory.ENGLISH || c.category == CourseCategory.SOCIAL_STUDIES;
+            case LAW_POLICY:
+                if (c.category == CourseCategory.SOCIAL_STUDIES && (c.name.contains("Government")||c.name.contains("Politics")||c.name.contains("US History"))) return true;
+                if (c.name.contains("Economics")||c.name.contains("Law")) return true;
+                return false;
+        }
+        return false;
+    }
+
+    private static double averageGPA(List<Course> plan) {
+        double sum = 0;
+        for (Course c: plan) sum += c.gpa;
+        return sum / plan.size();
+    }
+
+    private static double averageDifficulty(List<Course> plan) {
+        double sum = 0;
+        for (Course c: plan) sum+=c.difficulty;
+        return sum / plan.size();
+    }
+
+    private static double calculateRelevance(List<Course> plan) {
+        double sum = 0;
+        for (Course c: plan) sum+=c.relevance;
+        return sum;
+    }
+
+    private static String chooseCourseFromCandidates(List<Course> candidates, MajorDirection direction, boolean isForGPA) {
+        List<Course> inMajor = new ArrayList<>();
+        for (Course c : candidates) {
+            if (isCourseInMajor(direction,c)) inMajor.add(c);
+        }
+
+        if (!inMajor.isEmpty()) {
+            double maxRel = inMajor.stream().mapToDouble(cc->cc.relevance).max().orElse(-1);
+            List<Course> topRel = inMajor.stream().filter(cc->cc.relevance==maxRel).collect(Collectors.toList());
+            if (topRel.size() == 1) {
+                return topRel.get(0).name;
+            } else {
+                String names = topRel.stream().map(cc->cc.name).collect(Collectors.joining(", "));
+                return "(" + names + ")  //并列" + (isForGPA?"GPA":"难度") + "方向内relevance最高课程";
+            }
+        } else {
+            String names = candidates.stream().map(cc->cc.name).collect(Collectors.joining(", "));
+            return "(" + names + ")  //并列" + (isForGPA?"GPA":"难度") + "无专业方向课程";
+        }
+    }
+
+    private static void printHighestGPAPlan(List<List<Course>> feasiblePlans, MajorDirection direction) {
+        double maxGPA = -1;
+        for (List<Course> plan: feasiblePlans) {
+            double gpa = averageGPA(plan);
+            if (gpa > maxGPA) {
+                maxGPA = gpa;
+            }
+        }
+        List<List<Course>> topPlans = new ArrayList<>();
+        for (List<Course> plan: feasiblePlans) {
+            double gpa = averageGPA(plan);
+            if (Math.abs(gpa - maxGPA)<1e-9) {
+                topPlans.add(plan);
+            }
+        }
+
+        if (topPlans.size()==1) {
+            printPlan(topPlans.get(0));
+            return;
+        }
+
+        System.out.println("GPA最高方案(出现并列时按规则处理):");
+        int periodCount = topPlans.get(0).size();
+        for (int i=0; i<periodCount; i++) {
+            int period = topPlans.get(0).get(i).period;
+            Set<Course> periodCourses = new HashSet<>();
+            for (List<Course> p : topPlans) {
+                periodCourses.add(p.get(i));
+            }
+            if (periodCourses.size()==1) {
+                System.out.println("Period " + period + ": " + periodCourses.iterator().next().name);
+            } else {
+                List<Course> candidates = new ArrayList<>(periodCourses);
+                String chosen = chooseCourseFromCandidates(candidates,direction,true);
+                System.out.println("Period " + period + ": " + chosen);
+            }
+        }
+    }
+
+    private static void printEasiestPlan(List<List<Course>> feasiblePlans, MajorDirection direction) {
+        double minDiff = Double.MAX_VALUE;
+        for (List<Course> plan : feasiblePlans) {
+            double d = averageDifficulty(plan);
+            if (d < minDiff) minDiff = d;
+        }
+        List<List<Course>> easiestPlans = feasiblePlans.stream().filter(p->Math.abs(averageDifficulty(p)-minDiff)<1e-9).collect(Collectors.toList());
+
+        if (easiestPlans.size()==1) {
+            printPlan(easiestPlans.get(0));
+            return;
+        }
+
+        System.out.println("课程最简单方案(出现并列时按规则处理):");
+        int periodCount = easiestPlans.get(0).size();
+        for (int i=0; i<periodCount; i++) {
+            int period = easiestPlans.get(0).get(i).period;
+            Set<Course> periodCourses = new HashSet<>();
+            for (List<Course> p : easiestPlans) {
+                periodCourses.add(p.get(i));
+            }
+            if (periodCourses.size()==1) {
+                System.out.println("Period " + period + ": " + periodCourses.iterator().next().name);
+            } else {
+                List<Course> candidates = new ArrayList<>(periodCourses);
+                String chosen = chooseCourseFromCandidates(candidates,direction,false);
+                System.out.println("Period " + period + ": " + chosen);
+            }
+        }
+    }
+
+    private static void printMostRelevantPlan(List<List<Course>> feasiblePlans, MajorDirection direction) {
+        // 从feasiblePlans中收集所有period出现过的课程
+        Map<Integer, Set<Course>> periodMap = new HashMap<>();
+        for (List<Course> plan: feasiblePlans) {
+            for (Course c : plan) {
+                periodMap.computeIfAbsent(c.period, k->new HashSet<>()).add(c);
+            }
+        }
+
+        System.out.println("与专业最相关方案(每period独立选择):");
+        List<Integer> sortedPeriods = new ArrayList<>(periodMap.keySet());
+        Collections.sort(sortedPeriods);
+        for (Integer period: sortedPeriods) {
+            Set<Course> pCourses = periodMap.get(period);
+            List<Course> inMajor = pCourses.stream().filter(c->isCourseInMajor(direction,c)).collect(Collectors.toList());
+            if (inMajor.isEmpty()) {
+                System.out.println("Period " + period + ": free");
+            } else {
+                double maxRel = inMajor.stream().mapToDouble(cc->cc.relevance).max().orElse(-1);
+                List<Course> topRel = inMajor.stream().filter(cc->cc.relevance==maxRel).collect(Collectors.toList());
+                if (topRel.size()==1) {
+                    System.out.println("Period " + period + ": " + topRel.get(0).name);
+                } else {
+                    String names = topRel.stream().map(cc->cc.name).collect(Collectors.joining(", "));
+                    System.out.println("Period " + period + ": (" + names + ")  //并列专业相关最高");
+                }
+            }
+        }
+    }
+
+    private static void printPlan(List<Course> plan) {
+        if (plan == null) {
+            System.out.println("无可行方案");
+            return;
+        }
+        plan.sort(Comparator.comparingInt(c->c.period));
+        for (Course c : plan) {
+            System.out.println("Period " + c.period + ": " + c.name);
+        }
+    }
+
+    private static CourseCategory getCategoryByName(String name) {
+        if (name.contains("English 9")||name.contains("English 10")||name.contains("English 11")||name.contains("English 12")||
+            name.contains("AP English Language")||name.contains("Essay Writing for Seniors")||name.contains("SAT English")) {
+            return CourseCategory.ENGLISH;
+        }
+        if (name.contains("Algebra I")||name.contains("Algebra II")||name.contains("Algebra 2")||name.contains("Geometry")||
+            name.contains("Pre Calculus")||name.contains("PreCalculus")||name.contains("AP Precalculus")||name.contains("Honors Precalculus")||
+            name.contains("Calculus")||name.contains("AP Calculus")||name.contains("Statistics")||name.contains("Probability & Statistics")||name.contains("SAT Math")) {
+            return CourseCategory.MATH;
+        }
+        if (name.contains("Biology")||name.contains("Chemistry")||name.contains("Physics")||name.contains("Anatomy and Physiology")||
+            name.contains("Environmental Science")||name.contains("Forensic Science")||name.contains("Organic Chemistry")) {
+            return CourseCategory.SCIENCE;
+        }
+        if (name.contains("World History")||name.contains("US History")||name.contains("AP US Government")||name.contains("AP US History")||
+            name.contains("AP Comparative Government")||name.contains("AP European History")||name.contains("AP Macroeconomics")||
+            name.contains("AP Microeconomics")||name.contains("AP Psychology")||name.contains("Sociology")||name.contains("Global Issues")||
+            name.contains("Intro to World Religions")||name.contains("Cultural Studies")) {
+            return CourseCategory.SOCIAL_STUDIES;
+        }
+        if (name.contains("Financial Literacy")||name.contains("Intro to Business")||name.contains("Principles of Business")||
+            name.contains("Project Management")||name.contains("Entrepreneurship")||name.contains("Marketing")) {
+            return CourseCategory.FINANCIAL;
+        }
+        if (name.contains("PE/Health")) {
+            return CourseCategory.PE_HEALTH;
+        }
+        if (name.contains("Instrumental Music")||name.contains("Pencil and Ink Illustration")||name.contains("Drawing and Painting")||
+            name.contains("Digital Visual Art")||name.contains("Cultivating Creativity")||name.contains("Animated Thinking")) {
+            return CourseCategory.VPA;
+        }
+        if (name.contains("Spanish")||name.contains("Arabic")||name.contains("Turkish")||name.contains("Chinese")||name.contains("French")) {
+            return CourseCategory.WL;
+        }
+        if (name.contains("National & International Current Affairs")||name.contains("Public Speaking")||name.contains("Graphic Design")||
+            name.contains("Cybersecurity")||name.contains("Web Development")||name.contains("Computer Programming")||name.contains("AP Computer Science")||
+            name.contains("Dynamic Programming")||name.contains("Principles of Engineering")||name.contains("Architectural CAD")) {
+            return CourseCategory.LIFE_CAREERS;
+        }
+        if (name.contains("Broadcast Media Production")||name.contains("Juniors Only")||name.contains("Seniors Only Independent Online Courses")) {
+            return CourseCategory.ELECTIVES;
+        }
+        return CourseCategory.ELECTIVES;
+    }
+
+    private static int[] getGradeRange(String name) {
+        if (name.contains("English 9")) return new int[]{9,9};
+        if (name.contains("English 10") && !name.contains("AP")) return new int[]{10,10};
+        if (name.contains("English 11, Honors") || name.equals("English 11")) return new int[]{11,11};
+        if (name.contains("English 12, Honors") || name.contains("English 12, CP") || name.contains("English 12, Honors(Full)")) return new int[]{12,12};
+        if (name.contains("AP English Language & Composition")) return new int[]{11,12}; 
+        if (name.contains("AP ")) return new int[]{11,12};
+        return new int[]{9,12};
+    }
+
+    private static boolean isAPCourse(String name) {
+        return name.contains("AP ");
+    }
+
+    private static List<Course> initAllCourses() {
+        List<Course> list = new ArrayList<>();
+        class Helper {
+            void add(int idx, String name, double gpa, double diff, double rel, int period) {
+                CourseCategory cat = getCategoryByName(name);
+                boolean ap = isAPCourse(name);
+                int[] gr = getGradeRange(name);
+                List<String> pre = prerequisitesMap.getOrDefault(name, new ArrayList<>());
+                list.add(new Course(name,cat,gpa,diff,rel,pre,period,gr[0],gr[1],ap));
+            }
+        }
+        Helper h = new Helper();
+
+        // 按照之前给定的101门课程数据
+        // Period 1 (1-15)
+        h.add(1,"Biology, CP",4.33,4.5,4.7,1);
+        h.add(2,"Geometry, Honors",5.00,2.6,2.5,1);
+        h.add(3,"Instrumental Music I (Fall) / Instrumental Music II(Spring)",4.00,4.6,2.4,1);
+        h.add(4,"Chemistry, Honors",5.00,2.7,2.6,1);
+        h.add(5,"Modern World History, CP",4.33,3.5,4.3,1);
+        h.add(6,"Financial Literacy (Fall)/ Intro to Business (Spring)",4.00,4.3,3.5,1);
+        h.add(7,"SAT English (Spring)",4.00,4.9,3.7,1);
+        h.add(8,"SAT Math (Fall)/SAT Math (Spring)",4.00,4.6,3.4,1);
+        h.add(9,"English 11, Honors",5.00,4.0,4.6,1);
+        h.add(10,"PE/Health (Fall) / PE/Health (Spring)",4.00,2.9,3.1,1);
+        h.add(11,"Spanish IV, Honors",5.00,3.7,4.7,1);
+        h.add(12,"Arabic III & IV, Honors",5.00,3.9,4.8,1);
+        h.add(13,"Essay Writing for Seniors (Fall)",4.00,3.8,4.5,1);
+        h.add(14,"AP Statistics",5.33,4.8,5.0,1);
+        h.add(15,"Cybersecurity",4.00,4.5,4.8,1);
+
+        // Period 2 (16-29)
+        h.add(16,"Algebra I",4.00,3.2,3.8,2);
+        h.add(17,"Geometry, CP",4.33,3.5,4.0,2);
+        h.add(18,"Graphic Design - Full Year",4.00,3.9,4.2,2);
+        h.add(19,"Modern World History, CP",4.33,4.0,4.3,2);
+        h.add(20,"English 10, Honors",5.00,4.1,4.7,2);
+        h.add(21,"Honors Precalculus",5.00,4.7,5.0,2);
+        h.add(22,"Spanish III, Honors",5.00,3.6,4.8,2);
+        h.add(23,"Anatomy and Physiology",4.00,4.5,4.2,2);
+        h.add(24,"Instrumental Music I (Fall) / Instrumental Music II(Spring)",4.00,3.0,2.9,2);
+        h.add(25,"National & International Current Affairs (Fall) / Public Speaking (Spring)",4.00,3.7,4.0,2);
+        h.add(26,"English 12, CP",4.33,4.2,4.5,2);
+        h.add(27,"AP US History",5.33,4.9,5.0,2);
+        h.add(28,"Broadcast Media Production",4.00,3.7,4.0,2);
+        h.add(29,"Dynamic Programming",4.00,4.8,5.0,2);
+
+        // Period 3 (30-44)
+        h.add(30,"Spanish I /Arabic I /Turkish I / Chinese I / French I (Independent Study with a Supervisor)",4.00,3.2,3.5,3);
+        h.add(31,"English 9, Honors",5.00,3.6,4.5,3);
+        h.add(32,"Digital Visual Art (Fall) / Cultivating Creativity (Spring)",4.00,4.0,3.7,3);
+        h.add(33,"Instrumental Music I (Fall) / Instrumental Music II(Spring)",4.00,3.2,3.0,3);
+        h.add(34,"English 10, CP",4.33,3.5,4.0,3);
+        h.add(35,"AP Precalculus",5.33,4.8,5.0,3);
+        h.add(36,"Chemistry, CP",4.33,3.5,4.7,3);
+        h.add(37,"Web Development I (Fall)/Web Development II",4.00,4.6,5.0,3);
+        h.add(38,"Sociology of the Future (Fall) / Global Issues (Spring)",4.00,3.8,4.3,3);
+        h.add(39,"Pre Calculus, CP",4.33,4.0,4.6,3);
+        h.add(40,"National & International Current Affairs (Fall) / Public Speaking (Spring)",4.00,3.7,3.8,3);
+        h.add(41,"PE/Health (Fall) / PE/Health (Spring)",4.00,2.8,3.0,3);
+        h.add(42,"AP English Language & Composition",5.33,4.6,5.0,3);
+        h.add(43,"Calculus",4.00,4.3,4.7,3);
+        h.add(44,"AP Physics I",5.33,4.9,5.0,3);
+
+        // Period 4 (45-58)
+        h.add(45,"US History, CP",4.33,3.7,4.2,4);
+        h.add(46,"Biology, Honors",5.00,4.2,4.8,4);
+        h.add(47,"PE/Health (Fall) / PE/Health (Spring)",4.00,2.9,3.2,4);
+        h.add(48,"Spanish II, Honors",5.00,3.8,4.7,4);
+        h.add(49,"Arabic II, CP",4.33,3.5,4.0,4);
+        h.add(50,"Instrumental Music I (Fall) / Instrumental Music II(Spring)",4.00,3.1,3.0,4);
+        h.add(51,"English 11",4.00,3.9,4.3,4);
+        h.add(52,"AP Computer Science A",5.33,4.9,5.0,4);
+        h.add(53,"AP Chemistry with BiWeekly Labs (Thursday Afterschool)",5.33,5.0,5.0,4);
+        h.add(54,"Financial Literacy (Fall)/ Intro to Business (Spring)",4.00,4.1,4.3,4);
+        h.add(55,"Juniors Only with cumulative unweighted GPA 3.75 and above",4.00,4.0,4.0,4);
+        h.add(56,"Seniors Only Independent Online Courses with a Supervisor (Fall) / Independent Online Courses with a Supervisor (Spring)",4.00,3.8,4.2,4);
+        h.add(57,"Intro to World Religions, Mythology, and Belief Systems I (Fall) / Intro to World Religions, Mythology, and Belief",4.00,3.7,4.0,4);
+        h.add(58,"Sociology (Fall)/Anthropology(Spring)",4.00,4.0,4.5,4);
+
+        // Period 5 (59-73)
+        h.add(59,"PE/Health (Fall) / PE/Health (Spring)",4.00,2.8,3.2,5);
+        h.add(60,"English 9, Honors",5.00,3.5,4.6,5);
+        h.add(61,"Pencil and Ink Illustration (Fall) / Drawing and Painting (Spring)",4.00,4.0,3.5,5);
+        h.add(62,"US History, Honors",5.00,4.4,5.0,5);
+        h.add(63,"Chemistry, CP",4.33,3.9,4.5,5);
+        h.add(64,"Computer Programming I (Fall) / Computer Programming II (Spring)",4.00,4.7,5.0,5);
+        h.add(65,"AP Biology",5.33,4.9,5.0,5);
+        h.add(66,"AP Psychology",5.33,4.8,5.0,5);
+        h.add(67,"Physics, CP/Honors",5.00,4.5,4.9,5);
+        h.add(68,"AP Comparative Government and Politics",5.33,5.0,5.0,5);
+        h.add(69,"Entrepreneurship / Marketing",4.00,4.2,4.7,5);
+        h.add(70,"Pre Calculus, CP",4.33,4.1,4.6,5);
+        h.add(71,"Calculus",4.00,4.5,4.7,5);
+        h.add(72,"AP Calculus AB",5.33,4.9,5.0,5);
+        h.add(73,"Principles of Business (Fall)/ Project Management (Spring)",4.00,4.3,4.6,5);
+
+        // Period 7 (74-86)
+        h.add(74,"English 9, CP",4.33,3.5,4.0,7);
+        h.add(75,"US History, Honors(Full)",5.00,4.4,5.0,7);
+        h.add(76,"Biology, Honors",5.00,4.3,4.8,7);
+        h.add(77,"Algebra II",4.00,4.0,4.3,7);
+        h.add(78,"Modern World History, Honors",5.00,4.1,4.8,7);
+        h.add(79,"English 10, CP",4.33,3.7,4.2,7);
+        h.add(80,"AP US Government and Politics",5.33,4.9,5.0,7);
+        h.add(81,"AP Macroeconomics",5.33,5.0,5.0,7);
+        h.add(82,"AP Computer Science Principles",5.33,4.7,5.0,7);
+        h.add(83,"Principles of Engineering (Fall)\nArchitectural CAD (Spring)",4.00,4.5,4.8,7);
+        h.add(84,"Environmental Science",4.00,3.8,4.6,7);
+        h.add(85,"English 12, Honors",5.00,4.2,4.8,7);
+        h.add(86,"Honors Probability & Statistics",5.00,4.5,4.6,7);
+
+        // Period 8 (87-101)
+        h.add(87,"Digital Visual Art (Fall) / Animated Thinking (Spring)",4.00,3.9,3.7,8);
+        h.add(88,"Instrumental Music I (Fall) / Instrumental Music II(Spring)",4.00,3.2,3.0,8);
+        h.add(89,"Honors Spanish I",5.00,3.8,4.5,8);
+        h.add(90,"Geometry, CP",4.33,3.5,4.0,8);
+        h.add(91,"Algebra 2, Honors",5.00,4.5,4.7,8);
+        h.add(92,"PE/Health (Fall) / PE/Health (Spring)",4.00,2.8,3.2,8);
+        h.add(93,"Cultural Studies I/ Cultural Studies II",4.00,3.7,4.0,8);
+        h.add(94,"Forensic Science (Fall)/ Introduction to Organic Chemistry (Spring)",4.00,4.4,4.5,8);
+        h.add(95,"AP European History",5.33,4.8,5.0,8);
+        h.add(96,"English 11, Honors",5.00,4.0,4.6,8);
+        h.add(97,"AP Microeconomics",5.33,5.0,5.0,8);
+        h.add(98,"AP Calculus BC",5.33,5.0,5.0,8);
+        h.add(99,"English 12, Honors(Full)",5.00,4.3,4.8,8);
+        h.add(100,"AP Comparative Government and Politics",5.33,5.0,5.0,8);
+        h.add(101,"AP Statistics",5.33,4.8,5.0,8);
+
+        return list;
+    }
+}
