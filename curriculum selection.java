@@ -222,8 +222,8 @@ public class version10 {
         prerequisitesMap.put("Pre Calculus, CP", Arrays.asList("Algebra II","Algebra 2, Honors"));
         prerequisitesMap.put("Honors Precalculus", Arrays.asList("Algebra II","Algebra 2, Honors"));
         prerequisitesMap.put("AP Precalculus", Arrays.asList("Algebra II","Algebra 2, Honors"));
-        prerequisitesMap.put("Calculus", Arrays.asList("Pre Calculus, CP","Honors Precalculus"));
-        prerequisitesMap.put("AP Calculus AB", Arrays.asList("Pre Calculus, CP","Honors Precalculus"));
+        prerequisitesMap.put("Calculus", Arrays.asList("Pre Calculus, CP","Honors Precalculus","AP Precalculus"));
+        prerequisitesMap.put("AP Calculus AB", Arrays.asList("Pre Calculus, CP","Honors Precalculus","AP Precalculus"));
         prerequisitesMap.put("AP Calculus BC", Arrays.asList("AP Calculus AB"));
         prerequisitesMap.put("AP Statistics", Arrays.asList("AP Calculus BC"));
 
@@ -236,12 +236,9 @@ public class version10 {
         // -- 计算机 --
         prerequisitesMap.put("AP Computer Science A", Arrays.asList("Computer Programming I (Fall) / Computer Programming II (Spring)"));
         prerequisitesMap.put("AP Computer Science Principles", Arrays.asList("Computer Programming I (Fall) / Computer Programming II (Spring)"));
-        prerequisitesMap.put("Web Development I (Fall)/Web Development II", Arrays.asList("Computer Programming I (Fall) / Computer Programming II (Spring)"));
 
         // -- 社会科学/经济 --
         prerequisitesMap.put("AP US History", Arrays.asList("US History, CP","US History, Honors"));
-        prerequisitesMap.put("AP Microeconomics", Arrays.asList("Intro to Business"));
-        prerequisitesMap.put("AP Macroeconomics", Arrays.asList("Intro to Business"));
 
         // -- 语言 --
         prerequisitesMap.put("Spanish II, Honors", Arrays.asList("Spanish I"));
@@ -446,6 +443,7 @@ public class version10 {
         h.add("Biology, Honors", 5.00, 4.3, 4.8, 7, 9, 12, false);
         h.add("Algebra II", 4.00, 4.0, 4.3, 7, 9, 12, false);
         h.add("Modern World History, Honors", 5.00, 4.1, 4.8, 7, 9, 12, false);
+        h.add("Pencil and Ink Illustration (Fall) / Drawing and Painting (Spring)", 4.00, 3.5, 3.6, 7, 9, 12, false);
         h.add("English 10, CP", 4.33, 3.7, 4.2, 7, 10, 10, false);
         h.add("AP US Government and Politics", 5.33, 4.9, 5.0, 7, 10, 12, true);
         h.add("AP Macroeconomics", 5.33, 5.0, 5.0, 7, 10, 12, true);
@@ -468,9 +466,7 @@ public class version10 {
         h.add("English 11, Honors", 5.00, 4.0, 4.6, 8, 11, 11, false);
         h.add("AP Microeconomics", 5.33, 5.0, 5.0, 8, 10, 12, true);
         h.add("AP Calculus BC", 5.33, 5.0, 5.0, 8, 10, 12, true);
-        h.add("English 12, Honors(Full)", 5.00, 4.3, 4.8, 8, 12, 12, false);
-        h.add("AP Comparative Government and Politics", 5.33, 5.0, 5.0, 8, 10, 12, true);
-        h.add("AP Statistics", 5.33, 4.8, 5.0, 8, 10, 12, true);
+        h.add("English 12, Honors", 5.00, 4.3, 4.8, 8, 12, 12, false);
 
         return list;
 
@@ -663,20 +659,23 @@ public class version10 {
         return courseLevelMap.getOrDefault(courseName, 0);
     }
 
-    /**
-     * 判断先修课是否满足
-     * 数学课 => 同类别 + level >=
-     * 非数学课 => 名称精确匹配
-     */
     private static boolean arePrerequisitesMet(Course course, Set<String> completedSet) {
         List<String> prereqs = prerequisitesMap.getOrDefault(course.name, new ArrayList<>());
-        if (prereqs.isEmpty()) return true;
+        if (prereqs.isEmpty()) {
+            return true;
+        }
 
         boolean isMathCourse = (course.category == CourseCategory.MATH);
 
+        // 原本的写法里，对prereqs是逐条AND：for (String pr : prereqs) {...} if(没满足) return false
+        // ——> 改为只要有一条满足则可，因此写成OR:
+        boolean hasAnyPrereqSatisfied = false; // 用于记录是否“至少有一条先修被满足”
+
         for (String pr : prereqs) {
+            // pr 可能是 "Chemistry, CP" 或 "Chemistry, Honors"
+            // 可能在一个字符串里用 "/" 分割多个备选，如 "Algebra II / Algebra 2, Honors"
             String[] multipleOptions = pr.split("/");
-            boolean anyOptionMet = false;
+            boolean thisLineMet = false; // 该行（先修项）是否被满足
 
             for (String singleOpt : multipleOptions) {
                 singleOpt = singleOpt.trim();
@@ -689,25 +688,36 @@ public class version10 {
                         int compLvl = getLevel(comp);
                         CourseCategory compCat = getCategoryByName(comp);
                         if (compCat == needCat && compLvl >= needLvl) {
-                            anyOptionMet = true;
+                            // 匹配到即可
+                            thisLineMet = true;
                             break;
                         }
                     }
                 } else {
-                    // 非数学课 => 名称精确匹配
+                    // 非数学课 => 课程名称精确匹配
                     for (String comp : completedSet) {
-                        if (comp.equals(singleOpt)) {
-                            anyOptionMet = true;
+                        if (comp.trim().equalsIgnoreCase(singleOpt)) {
+                            thisLineMet = true;
                             break;
                         }
                     }
                 }
 
-                if (anyOptionMet) break;
+                // 如果某个singleOpt已满足，就不用再比下去
+                if (thisLineMet) {
+                    break;
+                }
             }
-            if (!anyOptionMet) return false;
+
+            // 如果这一行先修满足，则表示该课程的先修条件(OR逻辑)成功
+            if (thisLineMet) {
+                hasAnyPrereqSatisfied = true;
+                break; 
+            }
         }
-        return true;
+
+        // 最后判断是否满足“至少一条先修项”
+        return hasAnyPrereqSatisfied;
     }
 
     //=================== 生成全部组合 ===================
