@@ -3,9 +3,6 @@ package java1;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import java1.CourseSelection.Course;
-import java1.CourseSelection.CourseCategory;
-
 /**
  * FinalProgramWithAllConstraintsAndSelection
  * 需求：当出现多份 GPA 最高方案或难度最低方案时，需要同时输出所有并列方案。
@@ -168,6 +165,7 @@ public class version10 {
         courseLevelMap.put("Geometry, Honors", 5);
         courseLevelMap.put("Algebra II", 5);
         courseLevelMap.put("Algebra 2, Honors", 5);
+        courseLevelMap.put("Honors Probability & Statistics", 6);
         courseLevelMap.put("Pre Calculus, CP", 6);
         courseLevelMap.put("Honors Precalculus", 6);
         courseLevelMap.put("AP Precalculus", 6);
@@ -226,6 +224,7 @@ public class version10 {
         prerequisitesMap.put("AP Calculus AB", Arrays.asList("Pre Calculus, CP","Honors Precalculus","AP Precalculus"));
         prerequisitesMap.put("AP Calculus BC", Arrays.asList("AP Calculus AB"));
         prerequisitesMap.put("AP Statistics", Arrays.asList("AP Calculus BC"));
+        prerequisitesMap.put("Honors Probability & Statistics", Arrays.asList("Algebra II", "Algebra 2, Honors"));
 
         // -- 科学 --
         prerequisitesMap.put("AP Biology", Arrays.asList("Biology, CP","Biology, Honors"));
