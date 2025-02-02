@@ -369,104 +369,103 @@ public class version10 {
         h.add("Essay Writing for Seniors (Fall)", 4.00, 3.8, 4.5, 1, 12, 12, false);
         h.add("AP Statistics", 5.33, 4.8, 5.0, 1, 10, 12, true);
         h.add("Cybersecurity", 4.00, 4.5, 4.8, 1, 9, 12, false);
-
+    
         // ============ Period 2 ============
         h.add("Algebra I", 4.00, 3.2, 3.8, 2, 9, 12, false);
         h.add("Geometry, CP", 4.33, 3.5, 4.0, 2, 9, 12, false);
         h.add("Graphic Design - Full Year", 4.00, 3.9, 4.2, 2, 9, 12, false);
-        h.add("Modern World History, CP", 4.33, 4.0, 4.3, 2, 9, 12, false);
+        h.add("Modern World History, CP", 4.33, 3.5, 4.3, 2, 9, 12, false);
         h.add("English 10, Honors", 5.00, 4.1, 4.7, 2, 10, 10, false);
         h.add("Honors Precalculus", 5.00, 4.7, 5.0, 2, 9, 12, false);
         h.add("Spanish III, Honors", 5.00, 3.6, 4.8, 2, 9, 12, false);
         h.add("Anatomy and Physiology", 4.00, 4.5, 4.2, 2, 9, 12, false);
-        h.add("Instrumental Music I (Fall) / Instrumental Music II(Spring)", 4.00, 3.0, 2.9, 2, 9, 12, false);
+        h.add("Instrumental Music I (Fall) / Instrumental Music II(Spring)", 4.00, 4.6, 2.4, 2, 9, 12, false);
         h.add("National & International Current Affairs (Fall) / Public Speaking (Spring)", 4.00, 3.7, 4.0, 2, 9, 12, false);
         h.add("English 12, CP", 4.33, 4.2, 4.5, 2, 12, 12, false);
         h.add("AP US History", 5.33, 4.9, 5.0, 2, 10, 12, true);
         h.add("Broadcast Media Production", 4.00, 3.7, 4.0, 2, 9, 12, false);
         h.add("Dynamic Programming", 4.00, 4.8, 5.0, 2, 9, 12, false);
-
+    
         // ============ Period 3 ============
         h.add("Spanish I /Arabic I /Turkish I / Chinese I / French I (Independent Study with a Supervisor)", 4.00, 3.2, 3.5, 3, 9, 12, false);
         h.add("English 9, Honors", 5.00, 3.6, 4.5, 3, 9, 9, false);
         h.add("Digital Visual Art (Fall) / Cultivating Creativity (Spring)", 4.00, 4.0, 3.7, 3, 9, 12, false);
-        h.add("Instrumental Music I (Fall) / Instrumental Music II(Spring)", 4.00, 3.2, 3.0, 3, 9, 12, false);
+        h.add("Instrumental Music I (Fall) / Instrumental Music II(Spring)", 4.00, 4.6, 2.4, 3, 9, 12, false);
         h.add("English 10, CP", 4.33, 3.5, 4.0, 3, 10, 10, false);
         h.add("AP Precalculus", 5.33, 4.8, 5.0, 3, 10, 12, true);
         h.add("Chemistry, CP", 4.33, 3.5, 4.7, 3, 9, 12, false);
         h.add("Web Development I (Fall)/Web Development II", 4.00, 4.6, 5.0, 3, 9, 12, false);
         h.add("Sociology of the Future (Fall) / Global Issues (Spring)", 4.00, 3.8, 4.3, 3, 9, 12, false);
         h.add("Pre Calculus, CP", 4.33, 4.0, 4.6, 3, 9, 12, false);
-        h.add("National & International Current Affairs (Fall) / Public Speaking (Spring)", 4.00, 3.7, 3.8, 3, 9, 12, false);
-        h.add("PE/Health (Fall) / PE/Health (Spring)", 4.00, 2.8, 3.0, 3, 9, 12, false);
+        h.add("National & International Current Affairs (Fall) / Public Speaking (Spring)", 4.00, 3.7, 4.0, 3, 9, 12, false);
+        h.add("PE/Health (Fall) / PE/Health (Spring)", 4.00, 2.9, 3.1, 3, 9, 12, false);
         h.add("AP English Language & Composition", 5.33, 4.6, 5.0, 3, 11, 12, true);
         h.add("Calculus", 4.00, 4.3, 4.7, 3, 9, 12, false);
         h.add("AP Physics I", 5.33, 4.9, 5.0, 3, 10, 12, true);
-
+    
         // ============ Period 4 ============
         h.add("US History, CP", 4.33, 3.7, 4.2, 4, 9, 12, false);
         h.add("Biology, Honors", 5.00, 4.2, 4.8, 4, 9, 12, false);
-        h.add("PE/Health (Fall) / PE/Health (Spring)", 4.00, 2.9, 3.2, 4, 9, 12, false);
+        h.add("PE/Health (Fall) / PE/Health (Spring)", 4.00, 2.9, 3.1, 4, 9, 12, false);
         h.add("Spanish II, Honors", 5.00, 3.8, 4.7, 4, 9, 12, false);
         h.add("Arabic II, CP", 4.33, 3.5, 4.0, 4, 9, 12, false);
-        h.add("Instrumental Music I (Fall) / Instrumental Music II(Spring)", 4.00, 3.1, 3.0, 4, 9, 12, false);
+        h.add("Instrumental Music I (Fall) / Instrumental Music II(Spring)", 4.00, 4.6, 2.4, 4, 9, 12, false);
         h.add("English 11", 4.00, 3.9, 4.3, 4, 11, 11, false);
         h.add("AP Computer Science A", 5.33, 4.9, 5.0, 4, 10, 12, true);
         h.add("AP Chemistry", 5.33, 5.0, 5.0, 4, 10, 12, true);
-        h.add("Financial Literacy (Fall)/ Intro to Business (Spring)", 4.00, 4.1, 4.3, 4, 9, 12, false);
+        h.add("Financial Literacy (Fall)/ Intro to Business (Spring)", 4.00, 4.3, 3.5, 4, 9, 12, false);
         h.add("Juniors Only with cumulative unweighted GPA 3.75 and above", 4.00, 4.0, 4.0, 4, 11, 11, false);
         h.add("Seniors Only Independent Online Courses with a Supervisor (Fall) / Independent Online Courses with a Supervisor (Spring)", 4.00, 3.8, 4.2, 4, 12, 12, false);
         h.add("Intro to World Religions, Mythology, and Belief Systems I (Fall) / Intro to World Religions, Mythology, and Belief", 4.00, 3.7, 4.0, 4, 9, 12, false);
         h.add("Sociology (Fall)/Anthropology(Spring)", 4.00, 4.0, 4.5, 4, 9, 12, false);
-
+    
         // ============ Period 5 ============
-        h.add("PE/Health (Fall) / PE/Health (Spring)", 4.00, 2.8, 3.2, 5, 9, 12, false);
-        h.add("English 9, Honors", 5.00, 3.5, 4.6, 5, 9, 9, false);
+        h.add("PE/Health (Fall) / PE/Health (Spring)", 4.00, 2.9, 3.1, 5, 9, 12, false);
+        h.add("English 9, Honors", 5.00, 3.6, 4.5, 5, 9, 9, false);
         h.add("Pencil and Ink Illustration (Fall) / Drawing and Painting (Spring)", 4.00, 4.0, 3.5, 5, 9, 12, false);
         h.add("US History, Honors", 5.00, 4.4, 5.0, 5, 9, 12, false);
-        h.add("Chemistry, CP", 4.33, 3.9, 4.5, 5, 9, 12, false);
+        h.add("Chemistry, CP", 4.33, 3.5, 4.7, 5, 9, 12, false);
         h.add("Computer Programming I (Fall) / Computer Programming II (Spring)", 4.00, 4.7, 5.0, 5, 9, 12, false);
         h.add("AP Biology", 5.33, 4.9, 5.0, 5, 10, 12, true);
         h.add("AP Psychology", 5.33, 4.8, 5.0, 5, 10, 12, true);
         h.add("Physics, CP/Honors", 5.00, 4.5, 4.9, 5, 9, 12, false);
         h.add("AP Comparative Government and Politics", 5.33, 5.0, 5.0, 5, 10, 12, true);
         h.add("Entrepreneurship / Marketing", 4.00, 4.2, 4.7, 5, 9, 12, false);
-        h.add("Pre Calculus, CP", 4.33, 4.1, 4.6, 5, 9, 12, false);
-        h.add("Calculus", 4.00, 4.5, 4.7, 5, 9, 12, false);
+        h.add("Pre Calculus, CP", 4.33, 4.0, 4.6, 5, 9, 12, false);
+        h.add("Calculus", 4.00, 4.3, 4.7, 5, 9, 12, false);
         h.add("AP Calculus AB", 5.33, 4.9, 5.0, 5, 10, 12, true);
         h.add("Principles of Business (Fall)/ Project Management (Spring)", 4.00, 4.3, 4.6, 5, 9, 12, false);
-
+    
         // ============ Period 7 ============
         h.add("English 9, CP", 4.33, 3.5, 4.0, 7, 9, 9, false);
         h.add("US History, Honors", 5.00, 4.4, 5.0, 7, 9, 12, false);
-        h.add("Biology, Honors", 5.00, 4.3, 4.8, 7, 9, 12, false);
+        h.add("Biology, Honors", 5.00, 4.2, 4.8, 7, 9, 12, false);
         h.add("Algebra II", 4.00, 4.0, 4.3, 7, 9, 12, false);
         h.add("Modern World History, Honors", 5.00, 4.1, 4.8, 7, 9, 12, false);
-        h.add("Pencil and Ink Illustration (Fall) / Drawing and Painting (Spring)", 4.00, 3.5, 3.6, 7, 9, 12, false);
-        h.add("English 10, CP", 4.33, 3.7, 4.2, 7, 10, 10, false);
+        h.add("Pencil and Ink Illustration (Fall) / Drawing and Painting (Spring)", 4.00, 4.0, 3.5, 7, 9, 12, false);
+        h.add("English 10, CP", 4.33, 3.5, 4.0, 7, 10, 10, false);
         h.add("AP US Government and Politics", 5.33, 4.9, 5.0, 7, 10, 12, true);
         h.add("AP Macroeconomics", 5.33, 5.0, 5.0, 7, 10, 12, true);
         h.add("AP Computer Science Principles", 5.33, 4.7, 5.0, 7, 10, 12, true);
         h.add("Principles of Engineering (Fall)\nArchitectural CAD (Spring)", 4.00, 4.5, 4.8, 7, 9, 12, false);
         h.add("Environmental Science", 4.00, 3.8, 4.6, 7, 9, 12, false);
         h.add("English 12, Honors", 5.00, 4.2, 4.8, 7, 12, 12, false);
-        h.add("Honors Probability & Statistics", 5.00, 4.5, 4.6, 7, 9, 12, false); // 注意：本课程 levelMap 没有配置
-
+        h.add("Honors Probability & Statistics", 5.00, 4.5, 4.6, 7, 9, 12, false);
+    
         // ============ Period 8 ============
         h.add("Digital Visual Art (Fall) / Animated Thinking (Spring)", 4.00, 3.9, 3.7, 8, 9, 12, false);
-        h.add("Instrumental Music I (Fall) / Instrumental Music II(Spring)", 4.00, 3.2, 3.0, 8, 9, 12, false);
+        h.add("Instrumental Music I (Fall) / Instrumental Music II(Spring)", 4.00, 4.6, 2.4, 8, 9, 12, false);
         h.add("Honors Spanish I", 5.00, 3.8, 4.5, 8, 9, 12, false);
         h.add("Geometry, CP", 4.33, 3.5, 4.0, 8, 9, 12, false);
         h.add("Algebra 2, Honors", 5.00, 4.5, 4.7, 8, 9, 12, false);
-        h.add("PE/Health (Fall) / PE/Health (Spring)", 4.00, 2.8, 3.2, 8, 9, 12, false);
+        h.add("PE/Health (Fall) / PE/Health (Spring)", 4.00, 2.9, 3.1, 8, 9, 12, false);
         h.add("Cultural Studies I/ Cultural Studies II", 4.00, 3.7, 4.0, 8, 9, 12, false);
         h.add("Forensic Science (Fall)/ Introduction to Organic Chemistry (Spring)", 4.00, 4.4, 4.5, 8, 9, 12, false);
         h.add("AP European History", 5.33, 4.8, 5.0, 8, 10, 12, true);
         h.add("English 11, Honors", 5.00, 4.0, 4.6, 8, 11, 11, false);
         h.add("AP Microeconomics", 5.33, 5.0, 5.0, 8, 10, 12, true);
         h.add("AP Calculus BC", 5.33, 5.0, 5.0, 8, 10, 12, true);
-        h.add("English 12, Honors", 5.00, 4.3, 4.8, 8, 12, 12, false);
-
+        h.add("English 12, Honors", 5.00, 4.2, 4.8, 8, 12, 12, false);
         return list;
 
     }
